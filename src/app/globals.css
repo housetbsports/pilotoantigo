@@ -1,0 +1,325 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/movimento.css";
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--label);
+    font-family: var(--font-system);
+    font-size: 17px;
+    line-height: 22px;
+    letter-spacing: -0.024em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background-color: var(--accent-soft);
+  }
+  /* Foco do teclado: anel laranja suave, afastado 2 px. Com movimento, ele "fecha" de fora para dentro (movimento.css). */
+  :focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent) 60%, transparent);
+    outline-offset: 2px;
+  }
+}
+
+/* Skeleton: cinza com brilho que passa devagar, como no iOS. */
+.skeleton {
+  background-color: var(--fill-tertiary);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    light-dark(rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.05)) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+/* Pulso dos pontos de audiência no mapa. */
+@keyframes map-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+.map-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: map-pulse 2.4s var(--ease-spring) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .map-pulse {
+    animation: none;
+  }
+  .map-pulse {
+    opacity: 0;
+  }
+}
+
+/* Lado direito: mesmo papel off-white da Decade; cards brancos com filete. */
+.right-pane {
+  background-color: var(--bg) !important;
+}
+
+/* Rótulo pequeno em mono, caixa alta e espaçado (padrão Decade). */
+.eyebrow {
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--label-tertiary);
+}
+
+/* Impressão da One Pager: só a folha, sem a moldura da plataforma. */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .one-pager,
+  .one-pager * {
+    visibility: visible;
+  }
+  .one-pager {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Cérebro: o caminho selecionado "corre" pelas ligações. */
+@media (prefers-reduced-motion: no-preference) {
+  .brain-flow {
+    stroke-dasharray: 4 4;
+    animation: brain-flow 0.9s linear infinite;
+  }
+}
+@keyframes brain-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+/* ── Microinterações: o "cuidado" no clique, no passar do mouse e na troca de tela ── */
+@media (prefers-reduced-motion: no-preference) {
+  /* Mesma curva e tempos para todo controle (tokens --mov-* e --curva-*). O clique e os gestos dos ícones ficam em src/styles/movimento.css. */
+  a,
+  button,
+  summary,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"] {
+    transition:
+      color var(--mov-cor) var(--curva-saida),
+      background-color var(--mov-cor) var(--curva-saida),
+      border-color var(--mov-cor) var(--curva-saida),
+      box-shadow var(--mov-gesto) var(--curva-saida),
+      opacity var(--mov-cor) var(--curva-saida),
+      transform var(--mov-gesto) var(--curva-saida),
+      translate var(--mov-clique) var(--curva-saida),
+      scale var(--mov-clique) var(--curva-saida);
+  }
+  /* Cards clicáveis: sobem um pouco e ganham sombra. */
+  a.shadow-card:hover,
+  button.shadow-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-raised, 0 8px 24px rgb(0 0 0 / 0.08));
+  }
+  /* Primeira abertura: o conteúdo entra suave uma vez só (a moldura fica; as trocas usam as transições abaixo). */
+  .primeira-entrada {
+    animation: page-in 380ms var(--ease-spring) both;
+  }
+  /*
+   * Troca de tela. A moldura (barra lateral, campo do assistente) não anima: só o conteúdo.
+   * A tela antiga só esmaece (140 ms); a nova aparece logo depois e sobe 12 px, devagar no fim.
+   * Sem desfoque: em área grande ele pesa e engasga.
+   */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+  ::view-transition-old(.tela),
+  ::view-transition-old(.aba) {
+    animation: 140ms ease-out both tela-sai;
+  }
+  ::view-transition-new(.tela) {
+    animation:
+      220ms ease-out 90ms both tela-aparece,
+      460ms var(--ease-spring) 90ms both tela-sobe;
+  }
+  /* Abas do atleta: o cabeçalho fica parado e só o conteúdo da aba troca, com um movimento menor. */
+  ::view-transition-new(.aba) {
+    animation:
+      200ms ease-out 80ms both tela-aparece,
+      380ms var(--ease-spring) 80ms both tela-sobe-pouco;
+  }
+  /* Carregou (esqueleto → conteúdo) ou atualizou na mesma tela: troca cruzada curta, sem pulo. */
+  ::view-transition-old(.troca) {
+    animation: 120ms ease-out both tela-sai;
+  }
+  ::view-transition-new(.troca) {
+    animation: 240ms ease-out 40ms both tela-aparece;
+  }
+  /* O que continua na tela (cabeçalho do atleta) não pisca. */
+  ::view-transition-old(.fica),
+  ::view-transition-new(.fica) {
+    animation: none;
+  }
+  ::view-transition-group(.tela),
+  ::view-transition-group(.aba),
+  ::view-transition-group(.troca) {
+    animation-duration: 300ms;
+    animation-timing-function: var(--ease-spring);
+  }
+  /*
+   * Botão principal (fundo escuro, cantos da TB): sobe 1 px e ganha sombra ao passar o mouse,
+   * um reflexo atravessa o botão, e no clique ele afunda. Vale para todos, com ou sem ActionButton.
+   */
+  :is(button, a).bg-label.rounded-control:not(:disabled),
+  .btn-primary:not(:disabled) {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  :is(button, a).bg-label.rounded-control:not(:disabled)::after,
+  .btn-primary:not(:disabled)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 30%, color-mix(in srgb, currentColor 22%, transparent) 50%, transparent 70%);
+    transform: translateX(-110%);
+    transition: transform 650ms var(--ease-spring);
+    pointer-events: none;
+  }
+  :is(button, a).bg-label.rounded-control:not(:disabled):hover,
+  .btn-primary:not(:disabled):hover {
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px -12px rgb(0 0 0 / 0.55), 0 0 0 1px color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+  :is(button, a).bg-label.rounded-control:not(:disabled):hover::after,
+  .btn-primary:not(:disabled):hover::after {
+    transform: translateX(110%);
+  }
+  :is(button, a).bg-label.rounded-control:not(:disabled):active,
+  .btn-primary:not(:disabled):active {
+    transform: none;
+    box-shadow: 0 2px 6px -3px rgb(0 0 0 / 0.4);
+  }
+  button:disabled {
+    cursor: default;
+  }
+  /* Listas e grades marcadas aparecem em cascata. */
+  .cascade > * {
+    animation: rise-in 420ms var(--ease-spring) both;
+  }
+  .cascade > *:nth-child(2) { animation-delay: 40ms; }
+  .cascade > *:nth-child(3) { animation-delay: 80ms; }
+  .cascade > *:nth-child(4) { animation-delay: 120ms; }
+  .cascade > *:nth-child(5) { animation-delay: 160ms; }
+  .cascade > *:nth-child(n + 6) { animation-delay: 200ms; }
+  /* Texto novo da IA entra com fade. */
+  .fade-in {
+    animation: rise-in 300ms var(--ease-spring) both;
+  }
+}
+@keyframes tela-sai {
+  to { opacity: 0; }
+}
+@keyframes tela-aparece {
+  from { opacity: 0; }
+}
+@keyframes tela-sobe {
+  from { transform: translateY(12px); }
+}
+@keyframes tela-sobe-pouco {
+  from { transform: translateY(6px); }
+}
+/* "Reduzir movimento": troca de tela sem animação. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+/* Indicador de trabalho da IA: o retângulo da TB enchendo. */
+@keyframes tb-fill {
+  0% { transform: scaleX(0); opacity: 1; }
+  60% { transform: scaleX(1); opacity: 1; }
+  100% { transform: scaleX(1); opacity: 0; }
+}
+.tb-loader {
+  position: relative;
+  width: 22px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--fill-secondary);
+  overflow: hidden;
+}
+.tb-loader-on-dark {
+  background: color-mix(in srgb, currentColor 25%, transparent);
+}
+.tb-loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
+  animation: tb-fill 1.4s var(--ease-spring) infinite;
+}
+
+/* ── Objetos 3D (Cubo3D, Pilha3D em components/ui/objetos-3d.tsx): giram devagar, param com "reduzir movimento". ── */
+@keyframes tb-gira {
+  from { transform: rotateX(-24deg) rotateY(0deg); }
+  to { transform: rotateX(-24deg) rotateY(360deg); }
+}
+@keyframes tb-respira {
+  0%, 100% { transform: translateZ(calc(var(--i) * var(--vao))); }
+  50% { transform: translateZ(calc(var(--i) * (var(--vao) + 2px))); }
+}
+@keyframes tb-sobe {
+  from { transform: scaleY(0); }
+}
+.tb-gira { transform: rotateX(-24deg) rotateY(30deg); animation: tb-gira var(--duration-lento) linear infinite; }
+.tb-gira.tb-rapido { animation-duration: 1.4s; }
+.tb-respira > * { animation: tb-respira 3.6s ease-in-out infinite; animation-delay: calc(var(--i) * 120ms); }
+.tb-sobe { transform-origin: bottom; animation: tb-sobe 700ms var(--ease-spring) both; }
+@media (prefers-reduced-motion: reduce) {
+  .tb-gira, .tb-respira > *, .tb-sobe { animation: none; }
+}

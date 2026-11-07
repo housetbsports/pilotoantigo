@@ -1,0 +1,266 @@
+/*
+ * Plataforma TB · tokens de design
+ * Fonte única de verdade para cor, tipografia, raio, sombra, material, espaço e movimento.
+ * Cada cor usa light-dark(claro, escuro). Padrão da plataforma: claro
+ * (data-theme="light" no <html>, em src/app/layout.tsx). "dark" força o escuro;
+ * sem o atributo, segue o sistema.
+ * Referência: cores de sistema e escala tipográfica do iOS (Apple HIG).
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ── Destaque ──────────────────────────────────────────────
+   * Laranja TB (mesmo valor do TB System · Cards: #FF5722 / #E64A19).
+   * Usar só em ações, estados selecionados e na marca.
+   */
+  --accent: light-dark(#ff5722, #ff6b3d);
+  --accent-hover: light-dark(#e64a19, #ff8a65);
+  --accent-soft: light-dark(rgb(255 87 34 / 0.1), rgb(255 107 61 / 0.18));
+  --on-accent: #ffffff;
+
+  /* ── Fundos ─────────────────────────────────────────────── */
+  --bg: light-dark(#f7f6f5, #121211); /* fundo da página */
+  --bg-elevated: light-dark(#ffffff, #1b1b1a); /* cards, listas */
+  --bg-elevated-2: light-dark(#ffffff, #252523); /* popovers, itens dentro de cards */
+
+  /* ── Texto (labels de sistema) ──────────────────────────── */
+  --label: light-dark(#161615, #f7f6f5);
+  --label-secondary: light-dark(rgb(22 22 21 / 0.62), rgb(247 246 245 / 0.62));
+  --label-tertiary: light-dark(rgb(22 22 21 / 0.4), rgb(247 246 245 / 0.36));
+  /* Verde só para status: busca ativa / dado ao vivo. Não usar como cor de marca. */
+  --live: light-dark(#1f9d55, #3ccf74);
+  --label-quaternary: light-dark(rgb(22 22 21 / 0.2), rgb(247 246 245 / 0.2));
+
+  /* ── Preenchimentos (controles, chips, skeleton) ───────── */
+  --fill: light-dark(rgb(120 120 128 / 0.16), rgb(120 120 128 / 0.32));
+  --fill-secondary: light-dark(rgb(120 120 128 / 0.12), rgb(120 120 128 / 0.24));
+  --fill-tertiary: light-dark(rgb(118 118 128 / 0.08), rgb(118 118 128 / 0.18));
+
+  /* ── Separadores ───────────────────────────────────────── */
+  --separator: light-dark(rgb(12 11 11 / 0.08), rgb(247 246 245 / 0.1));
+  --separator-strong: light-dark(rgb(12 11 11 / 0.16), rgb(247 246 245 / 0.18));
+
+  /* ── Cinzas de sistema ─────────────────────────────────── */
+  --gray-1: #8e8e93;
+  --gray-2: light-dark(#aeaeb2, #636366);
+  --gray-3: light-dark(#c7c7cc, #48484a);
+  --gray-4: light-dark(#d1d1d6, #3a3a3c);
+  --gray-5: light-dark(#e5e5ea, #2c2c2e);
+  --gray-6: light-dark(#f2f2f7, #1c1c1e);
+
+  /* ── Estados de sistema (uso pontual: erro, lacunas, presença) ── */
+  --status-positive: light-dark(#248a3d, #30d158);
+  --status-warning: light-dark(#c93400, #ff9f0a);
+  --status-warning-soft: light-dark(rgb(255 149 0 / 0.1), rgb(255 159 10 / 0.14));
+  --status-critical: light-dark(#d70015, #ff453a);
+  --status-critical-soft: light-dark(rgb(255 59 48 / 0.08), rgb(255 69 58 / 0.14));
+
+  /* ── Gráficos: tons de cinza, o laranja só destaca ─────────
+   * Séries diferenciadas por luminosidade (legíveis sem cor), destaque em --accent.
+   * Máximo 3 séries por gráfico; acima disso, agrupar em "Outros". */
+  --series-1: light-dark(#3a3a3c, #e5e5ea);
+  --series-2: light-dark(#8e8e93, #8e8e93);
+  --series-3: light-dark(#c7c7cc, #48484a);
+  --series-highlight: var(--accent);
+
+  /* ── Materiais translúcidos ────────────────────────────── */
+  --material-sidebar: light-dark(rgb(240 240 243 / 0.72), rgb(28 28 30 / 0.7));
+  --material-panel: light-dark(rgb(255 255 255 / 0.76), rgb(36 36 38 / 0.74));
+  --material-bar: light-dark(rgb(249 249 251 / 0.82), rgb(22 22 24 / 0.8));
+  --material-blur: saturate(180%) blur(28px);
+
+  /* ── Tipografia ────────────────────────────────────────── */
+  --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-inter, "Inter"),
+    "Inter", system-ui, sans-serif;
+  --font-display-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    var(--font-inter, "Inter"), "Inter", system-ui, sans-serif;
+
+  /* ── Cores de sombra (as sombras em si ficam no @theme abaixo) ──
+   * Muito suaves; no escuro, a borda fina (hairline) faz o trabalho. */
+  --elev-soft: light-dark(rgb(0 0 0 / 0), rgb(0 0 0 / 0));
+  --elev-medium: light-dark(rgb(0 0 0 / 0.04), rgb(0 0 0 / 0.3));
+  --elev-deep: light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.5));
+  --hairline: light-dark(rgb(12 11 11 / 0.08), rgb(247 246 245 / 0.1));
+
+  /* ── Layout (grid de 8pt) ──────────────────────────────── */
+  --sidebar-width: 380px; /* coluna de dados fixa (formato Decade) */
+  --sidebar-compact-width: 64px; /* coluna só de ícones (Configurações) */
+  --panel-width: 380px;
+  --tabbar-height: 56px;
+  --page-gutter: 16px; /* celular */
+  --content-max: 1120px;
+
+  /* ── Movimento ─────────────────────────────────────────────
+   * Uma curva e três tempos para tudo que responde ao toque (regras em DESIGN.md › Movimento).
+   * Gestos dos ícones e dos botões: src/styles/movimento.css. */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-lento: 9s; /* giro dos objetos 3D */
+  --mov-clique: 120ms; /* afundar ao clicar */
+  --mov-cor: 180ms; /* troca de cor e fundo */
+  --mov-gesto: 260ms; /* gesto do ícone, anel de foco */
+  --curva-saida: cubic-bezier(0.22, 1, 0.36, 1); /* sai rápido e assenta devagar */
+  --curva-mola: cubic-bezier(0.34, 1.36, 0.64, 1); /* passa um tiquinho e volta: só nos ícones */
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-gutter: 32px;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --page-gutter: 48px;
+  }
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+  }
+}
+
+/* ── Mapeamento para o Tailwind ───────────────────────────────
+ * Remove a paleta padrão: só existem as cores acima.
+ * Uso: bg-bg, bg-elevated, text-label, text-label-secondary, bg-accent, border-separator…
+ */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-accent: var(--accent);
+  --color-live: var(--live);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+
+  --color-bg: var(--bg);
+  --color-elevated: var(--bg-elevated);
+  --color-elevated-2: var(--bg-elevated-2);
+
+  --color-label: var(--label);
+  --color-label-secondary: var(--label-secondary);
+  --color-label-tertiary: var(--label-tertiary);
+  --color-label-quaternary: var(--label-quaternary);
+
+  --color-fill: var(--fill);
+  --color-fill-secondary: var(--fill-secondary);
+  --color-fill-tertiary: var(--fill-tertiary);
+
+  --color-separator: var(--separator);
+  --color-separator-strong: var(--separator-strong);
+
+  --color-gray-1: var(--gray-1);
+  --color-gray-2: var(--gray-2);
+  --color-gray-3: var(--gray-3);
+  --color-gray-4: var(--gray-4);
+  --color-gray-5: var(--gray-5);
+  --color-gray-6: var(--gray-6);
+
+  --color-series-1: var(--series-1);
+  --color-series-2: var(--series-2);
+  --color-series-3: var(--series-3);
+  --color-series-highlight: var(--series-highlight);
+
+  --color-positive: var(--status-positive);
+  --color-warning: var(--status-warning);
+  --color-warning-soft: var(--status-warning-soft);
+  --color-critical: var(--status-critical);
+  --color-critical-soft: var(--status-critical-soft);
+
+  --font-sans: var(--font-system);
+  --font-display: var(--font-display-stack);
+
+  /* Escala tipográfica do iOS. Uso: text-large-title, text-headline, text-footnote… */
+  --text-*: initial;
+  --text-large-title: 34px;
+  --text-large-title--line-height: 41px;
+  --text-large-title--letter-spacing: -0.022em;
+  --text-title-1: 28px;
+  --text-title-1--line-height: 34px;
+  --text-title-1--letter-spacing: -0.02em;
+  --text-title-2: 22px;
+  --text-title-2--line-height: 28px;
+  --text-title-2--letter-spacing: -0.016em;
+  --text-title-3: 20px;
+  --text-title-3--line-height: 25px;
+  --text-title-3--letter-spacing: -0.014em;
+  --text-headline: 17px;
+  --text-headline--line-height: 22px;
+  --text-headline--letter-spacing: -0.024em;
+  --text-headline--font-weight: 500;
+  --text-body: 17px;
+  --text-body--line-height: 22px;
+  --text-body--letter-spacing: -0.024em;
+  --text-callout: 16px;
+  --text-callout--line-height: 21px;
+  --text-callout--letter-spacing: -0.02em;
+  --text-subheadline: 15px;
+  --text-subheadline--line-height: 20px;
+  --text-subheadline--letter-spacing: -0.016em;
+  --text-footnote: 13px;
+  --text-footnote--line-height: 18px;
+  --text-footnote--letter-spacing: -0.006em;
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--letter-spacing: 0em;
+
+  --font-weight-*: initial;
+  --font-weight-regular: 400;
+  --font-weight-medium: 400; /* Decade: um peso só, hierarquia por tamanho e cor */
+  --font-weight-semibold: 500;
+  /* Pesos fortes só na One Pager, que tem identidade própria. */
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* Raios. Uso: rounded-xs, rounded-control, rounded-card… */
+  --radius-xs: 3px; /* badges */
+  --radius-control: 4px; /* botões, campos (Decade: 2,4px) */
+  --radius-control-lg: 6px; /* campos grandes, segmentos */
+  --radius-card: 8px; /* Decade: 6,4px */
+  --radius-card-lg: 12px; /* cards de destaque, painéis */
+
+  /* Sombras. Uso: shadow-card, shadow-raised, shadow-panel */
+  --shadow-*: initial;
+  --shadow-card: 0 0 0 1px var(--hairline); /* sem sombra: só filete */
+  --shadow-raised: 0 0 0 1px var(--separator-strong), 0 2px 8px var(--elev-medium);
+  --shadow-panel: 0 16px 48px var(--elev-deep), 0 0 0 0.5px var(--hairline);
+
+  /* Espaço: base de 4px do Tailwind; usar só múltiplos pares (p-2 = 8, p-4 = 16, p-6 = 24, p-8 = 32). */
+  --spacing: 4px;
+
+  /* Aproximação CSS da mola. No Framer Motion, usar src/lib/motion.ts. */
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@utility material-sidebar {
+  background-color: var(--material-sidebar);
+  -webkit-backdrop-filter: var(--material-blur);
+  backdrop-filter: var(--material-blur);
+}
+@utility material-panel {
+  background-color: var(--material-panel);
+  -webkit-backdrop-filter: var(--material-blur);
+  backdrop-filter: var(--material-blur);
+}
+@utility material-bar {
+  background-color: var(--material-bar);
+  -webkit-backdrop-filter: var(--material-blur);
+  backdrop-filter: var(--material-blur);
+}
+@utility px-gutter {
+  padding-inline: var(--page-gutter);
+}

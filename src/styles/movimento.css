@@ -1,0 +1,204 @@
+/*
+ * Plataforma TB · movimento dos ícones e botões
+ * Cada ícone faz um gesto que lembra o que ele faz, ao passar o mouse ou focar pelo teclado.
+ * Tempos e curvas vêm dos tokens (--mov-*, --curva-*, em tokens.css). Regras em DESIGN.md › Movimento.
+ *
+ * Os gestos usam as propriedades soltas rotate, translate e scale (não transform),
+ * para não brigar com o transform do Framer Motion nem com o "sobe" dos cards.
+ * Com "reduzir movimento" ligado, nada aqui se mexe: só as cores mudam.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ── Base: todo ícone pode se mexer com a mesma curva ─────── */
+  .lucide {
+    transition:
+      rotate var(--mov-gesto) var(--curva-mola),
+      translate var(--mov-gesto) var(--curva-mola),
+      scale var(--mov-gesto) var(--curva-mola),
+      color var(--mov-cor) var(--curva-saida);
+  }
+
+  /* ── Clique: o controle afunda 1 px e encolhe um pouco ──── */
+  :is(button, a, summary, [role="button"], [role="tab"], [role="menuitem"]):not(:disabled):active {
+    translate: 0 1px;
+    scale: 0.98;
+    transition-duration: var(--mov-clique);
+  }
+  /* Botão redondo só de ícone afunda um pouco mais, para o toque ser sentido. */
+  :is(button, a).rounded-full:not(:disabled):active {
+    scale: 0.94;
+  }
+
+  /*
+   * ── Gestos ───────────────────────────────────────────────
+   * "Dono" do gesto: o botão, link ou rótulo em que o ícone está.
+   * Passar o mouse ou focar pelo teclado no dono faz o ícone se mexer.
+   */
+
+  /* Engrenagem gira um quarto de volta. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-settings, .lucide-settings-2, .lucide-cog) {
+    rotate: 90deg;
+  }
+
+  /* Pasta abre um pouco: inclina a partir do canto de baixo. */
+  :is(.lucide-folder, .lucide-folder-kanban, .lucide-folder-tree, .lucide-folder-open) {
+    transform-origin: 15% 85%;
+  }
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-folder, .lucide-folder-kanban, .lucide-folder-tree, .lucide-folder-open) {
+    rotate: -8deg;
+    translate: 0 -1px;
+  }
+
+  /* Enviar e setas deslizam na direção para onde apontam. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-arrow-right, .lucide-chevron-right, .lucide-play) {
+    translate: 3px 0;
+  }
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-arrow-left, .lucide-chevron-left, .lucide-reply, .lucide-panel-left) {
+    translate: -3px 0;
+  }
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-arrow-up, .lucide-bookmark, .lucide-house, .lucide-calendar-range) {
+    translate: 0 -2px;
+  }
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-arrow-down, .lucide-chevron-down, .lucide-download, .lucide-printer) {
+    translate: 0 2px;
+  }
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-arrow-up-right, .lucide-external-link, .lucide-send, .lucide-copy) {
+    translate: 2px -2px;
+  }
+  /* Abrir lista (para cima e para baixo): estica de leve. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    .lucide-chevrons-up-down {
+    scale: 1 1.2;
+  }
+
+  /* Lixeira balança de leve, uma vez. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-trash, .lucide-trash-2) {
+    animation: icone-balanca 420ms var(--curva-saida);
+  }
+
+  /* Lua e sol giram ao passar o mouse; ao trocar o tema, o novo entra girando (classe .tema-icone). */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible) .lucide-moon {
+    rotate: -24deg;
+  }
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible) .lucide-sun {
+    rotate: 45deg;
+  }
+  .tema-icone {
+    animation: icone-troca var(--mov-gesto) var(--curva-mola);
+  }
+
+  /* Somar e fechar giram um quarto de volta; atualizar e refazer, meia volta. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-plus, .lucide-x) {
+    rotate: 90deg;
+  }
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-refresh-cw, .lucide-rotate-cw) {
+    rotate: 180deg;
+  }
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible) .lucide-rotate-ccw {
+    rotate: -180deg;
+  }
+
+  /* Ferramentas de escrita e anexo inclinam como se fossem usadas. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-paperclip, .lucide-pen-line, .lucide-pencil, .lucide-link-2, .lucide-at-sign) {
+    rotate: -14deg;
+  }
+
+  /* Lupa aproxima. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(.lucide-search, .lucide-search-x) {
+    scale: 1.12;
+    rotate: -8deg;
+  }
+
+  /* Assistente (brilhos) gira e cresce um pouco. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible) .lucide-sparkles {
+    rotate: 18deg;
+    scale: 1.1;
+  }
+
+  /* Pessoas, mídia, câmera, microfone, coração: crescem um pouco. */
+  :is(a, button, summary, label, [role="button"], [role="tab"], [role="menuitem"]):is(:hover, :focus-visible)
+    :is(
+      .lucide-user-round,
+      .lucide-users,
+      .lucide-newspaper,
+      .lucide-monitor-play,
+      .lucide-route,
+      .lucide-camera,
+      .lucide-mic,
+      .lucide-heart,
+      .lucide-image,
+      .lucide-file-text,
+      .lucide-layout-grid,
+      .lucide-presentation,
+      .lucide-bar-chart-3,
+      .lucide-chart-column
+    ) {
+    scale: 1.1;
+  }
+
+  /* ── Anel de foco: aparece de fora para dentro, macio ────── */
+  :focus-visible {
+    animation: anel-foco var(--mov-gesto) var(--curva-saida);
+  }
+}
+
+@keyframes icone-balanca {
+  0%, 100% { rotate: 0deg; }
+  25% { rotate: -10deg; }
+  55% { rotate: 8deg; }
+  80% { rotate: -4deg; }
+}
+@keyframes icone-troca {
+  from { rotate: -90deg; scale: 0.5; opacity: 0; }
+}
+@keyframes anel-foco {
+  from { outline-offset: 6px; outline-color: transparent; }
+}
+
+/*
+ * ── Troca de tema (claro ↔ escuro) ───────────────────────────
+ * A página antiga fica parada por baixo e a nova aparece por cima: as cores passam
+ * de um tema para o outro sem piscar e sem nada se deslocar. Vale para a página inteira,
+ * inclusive as partes que têm transição própria de troca de tela (por isso o !important,
+ * só enquanto a classe .tema-trocando estiver no <html>, colocada por src/lib/theme.ts).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html.tema-trocando::view-transition-group(*) {
+    animation: none !important;
+  }
+  html.tema-trocando::view-transition-old(*) {
+    animation: none !important;
+  }
+  html.tema-trocando::view-transition-new(*) {
+    animation: 320ms var(--curva-saida) both tema-aparece !important;
+  }
+}
+@keyframes tema-aparece {
+  from { opacity: 0; }
+}
+
+/* ── Altura que desliza (AlturaSuave): o conteúdo cresce ou encolhe sem dar tranco na tela ── */
+.altura-suave {
+  overflow: hidden;
+}
+/* Vazia: some de vez, para não ocupar espaço nem somar vão na coluna. */
+.altura-suave:not(:has(> div > *)) {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .altura-suave {
+    transition: height 320ms var(--curva-saida);
+  }
+}
