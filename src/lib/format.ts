@@ -17,3 +17,5 @@ export function formatMoney(n: number) {
 export function formatShortDate(iso: string) {
   return new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(iso)).replace(".", "");
 }
+
+export const formatInteger = (n: number) => new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 }).format(n);

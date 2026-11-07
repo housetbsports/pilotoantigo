@@ -4,7 +4,8 @@ import { Page } from "@/components/page";
 import { LinhaBriefing, Numeros, Progresso, SeloCadastro, Secao, Titulo } from "@/components/blocos";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
-import { briefings, influenciadores, vendas } from "@/exemplo/dados";
+import { Audiencia } from "@/components/viz/audiencia";
+import { audienciaSomada, briefings, influenciadores, vendas } from "@/exemplo/dados";
 import { formatMoney } from "@/lib/format";
 
 export default function AdminInicio() {
@@ -32,6 +33,8 @@ export default function AdminInicio() {
           { label: "Redes conectadas", value: String(influenciadores.reduce((n, i) => n + Object.values(i.redes).filter((r) => r?.conectada).length, 0)), note: "Instagram e TikTok" },
         ]}
       />
+
+      <Audiencia dados={audienciaSomada()} titulo="Público de todos" />
 
       <Secao title="Cadastros para acompanhar" description="Quem ainda não terminou de preencher.">
         <ul className="flex flex-col">

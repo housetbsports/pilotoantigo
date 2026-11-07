@@ -1,7 +1,8 @@
 import { Page } from "@/components/page";
 import { Titulo } from "@/components/blocos";
 import { Avatar } from "@/components/ui/avatar";
-import { eu } from "@/exemplo/dados";
+import { Audiencia } from "@/components/viz/audiencia";
+import { audienciaDeSlug, eu } from "@/exemplo/dados";
 import { MeuPerfil } from "./meu-perfil";
 
 export default function PerfilPage() {
@@ -17,6 +18,7 @@ export default function PerfilPage() {
           </span>
         </div>
       </div>
+      <Audiencia dados={audienciaDeSlug(eu.slug)} titulo="Seu público" />
       <MeuPerfil />
     </Page>
   );

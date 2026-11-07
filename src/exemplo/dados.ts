@@ -245,3 +245,85 @@ export function briefingsDe(slug: string) {
 export function vendasDe(slug: string) {
   return vendas.filter((v) => v.influenciador === slug);
 }
+
+/* ── Audiência (exemplo) ─────────────────────────────────────────── */
+
+export interface Cidade {
+  cidade: string;
+  pais: string;
+  lat: number;
+  lng: number;
+  seguidores: number;
+}
+
+export interface Audiencia {
+  cidades: Cidade[];
+  idades: { faixa: string; parte: number }[];
+  mulheres: number;
+  /** Seguidores online por hora (média da semana), 0h a 23h. */
+  online: number[];
+  /** Posts dos últimos 30 dias por hora em que saíram, 0h a 23h. */
+  postsPorHora: number[];
+}
+
+const onlineBase = [9, 5, 3, 2, 2, 3, 8, 16, 21, 19, 17, 20, 26, 24, 19, 18, 21, 27, 34, 41, 46, 43, 31, 18];
+
+function audienciaDe(total: number, cidades: Omit<Cidade, "seguidores">[], partes: number[], mulheres: number, pico = 0): Audiencia {
+  return {
+    cidades: cidades.map((c, i) => ({ ...c, seguidores: Math.round(total * partes[i]) })),
+    idades: [
+      { faixa: "13–17", parte: 4 },
+      { faixa: "18–24", parte: 22 },
+      { faixa: "25–34", parte: 41 },
+      { faixa: "35–44", parte: 22 },
+      { faixa: "45–54", parte: 8 },
+      { faixa: "55+", parte: 3 },
+    ],
+    mulheres,
+    online: onlineBase.map((v, h) => Math.round(v * total * 0.0012 * (h === 20 + pico ? 1.08 : 1))),
+    postsPorHora: Array.from({ length: 24 }, (_, h) => (h === 7 ? 3 : h === 12 ? 4 : h === 19 ? 5 : h === 21 ? 2 : 0)),
+  };
+}
+
+const C = {
+  sp: { cidade: "São Paulo", pais: "Brasil", lat: -23.55, lng: -46.63 },
+  rj: { cidade: "Rio de Janeiro", pais: "Brasil", lat: -22.91, lng: -43.17 },
+  bh: { cidade: "Belo Horizonte", pais: "Brasil", lat: -19.92, lng: -43.94 },
+  cwb: { cidade: "Curitiba", pais: "Brasil", lat: -25.43, lng: -49.27 },
+  poa: { cidade: "Porto Alegre", pais: "Brasil", lat: -30.03, lng: -51.23 },
+  fln: { cidade: "Florianópolis", pais: "Brasil", lat: -27.6, lng: -48.55 },
+  rec: { cidade: "Recife", pais: "Brasil", lat: -8.05, lng: -34.88 },
+  lis: { cidade: "Lisboa", pais: "Portugal", lat: 38.72, lng: -9.14 },
+  mia: { cidade: "Miami", pais: "Estados Unidos", lat: 25.76, lng: -80.19 },
+  bue: { cidade: "Buenos Aires", pais: "Argentina", lat: -34.6, lng: -58.38 },
+  la: { cidade: "Los Angeles", pais: "Estados Unidos", lat: 34.05, lng: -118.24 },
+};
+
+export const audiencias: Record<string, Audiencia> = {
+  "marina-alves": audienciaDe(276_400, [C.sp, C.rj, C.bh, C.cwb, C.poa, C.lis, C.mia], [0.31, 0.14, 0.07, 0.05, 0.04, 0.03, 0.02], 68),
+  "joao-pedro-lima": audienciaDe(56_800, [C.fln, C.sp, C.poa, C.cwb, C.la, C.bue], [0.24, 0.18, 0.09, 0.07, 0.04, 0.03], 31, 1),
+  "bia-santos": audienciaDe(722_500, [C.rj, C.sp, C.rec, C.bh, C.lis, C.mia, C.bue], [0.27, 0.21, 0.06, 0.06, 0.05, 0.03, 0.02], 74, -1),
+};
+
+export function audienciaDeSlug(slug: string) {
+  return audiencias[slug] ?? null;
+}
+
+/** Todos os públicos somados por cidade (visão do admin). */
+export function audienciaSomada(): Audiencia {
+  const lista = Object.values(audiencias);
+  const porCidade = new Map<string, Cidade>();
+  for (const a of lista)
+    for (const c of a.cidades) {
+      const atual = porCidade.get(c.cidade);
+      porCidade.set(c.cidade, atual ? { ...atual, seguidores: atual.seguidores + c.seguidores } : { ...c });
+    }
+  const soma = (f: (a: Audiencia) => number[]) => lista[0] ? f(lista[0]).map((_, i) => lista.reduce((t, a) => t + f(a)[i], 0)) : [];
+  return {
+    cidades: [...porCidade.values()],
+    idades: lista[0].idades.map((x, i) => ({ faixa: x.faixa, parte: Math.round(lista.reduce((t, a) => t + a.idades[i].parte, 0) / lista.length) })),
+    mulheres: Math.round(lista.reduce((t, a) => t + a.mulheres, 0) / lista.length),
+    online: soma((a) => a.online),
+    postsPorHora: soma((a) => a.postsPorHora),
+  };
+}

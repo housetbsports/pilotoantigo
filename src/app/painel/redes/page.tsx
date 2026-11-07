@@ -2,7 +2,8 @@ import { Page } from "@/components/page";
 import { Secao, Titulo } from "@/components/blocos";
 import { ConectarRedes } from "@/components/perfil/conectar-redes";
 import { MetricasRedes } from "@/components/perfil/metricas-redes";
-import { eu } from "@/exemplo/dados";
+import { Audiencia } from "@/components/viz/audiencia";
+import { audienciaDeSlug, eu } from "@/exemplo/dados";
 
 export default function RedesPage() {
   return (
@@ -14,6 +15,7 @@ export default function RedesPage() {
       <Secao title="Desempenho" description="Últimas 8 semanas.">
         <MetricasRedes />
       </Secao>
+      <Audiencia dados={audienciaDeSlug(eu.slug)} />
     </Page>
   );
 }

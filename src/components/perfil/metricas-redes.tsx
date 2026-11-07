@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Linha, Numeros } from "@/components/blocos";
+import { Numeros } from "@/components/blocos";
+import { Blocos3D } from "@/components/viz/blocos-3d";
 import { crescimento, eu, nomeRede, posts, type Rede } from "@/exemplo/dados";
 import { formatCompact, formatShortDate } from "@/lib/format";
 import { instant, spring } from "@/lib/motion";
@@ -63,10 +64,36 @@ export function MetricasRedes({ influenciador = eu }: { influenciador?: typeof e
                   { label: "Engajamento", value: `${conta.engajamento.toLocaleString("pt-BR")}%`, note: "Por post" },
                 ]}
               />
-              {meus && <div className="flex flex-col gap-2">
-                <span className="text-footnote text-label-secondary">Seguidores</span>
-                <Linha valores={serie} rotulos={["8 semanas atrás", "hoje"]} />
-              </div>}
+              {meus && (
+                <div className="grid gap-10 md:grid-cols-2">
+                  <div className="flex flex-col gap-3">
+                    <span className="text-subheadline font-medium">Novos seguidores por semana</span>
+                    <Blocos3D
+                      key={`s-${rede}`}
+                      altura={220}
+                      resumo="Novos seguidores em cada uma das últimas 7 semanas."
+                      itens={serie.slice(1).map((v, i) => ({
+                        rotulo: i === serie.length - 2 ? "esta" : `-${serie.length - 2 - i}`,
+                        valor: v - serie[i],
+                        frase: `${formatCompact(v - serie[i])} novos seguidores ${i === serie.length - 2 ? "nesta semana" : `há ${serie.length - 2 - i} semana${serie.length - 2 - i > 1 ? "s" : ""}`}`,
+                      }))}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    <span className="text-subheadline font-medium">Alcance por post</span>
+                    <Blocos3D
+                      key={`p-${rede}`}
+                      altura={220}
+                      resumo="Alcance de cada post recente."
+                      itens={[...lista].reverse().map((p) => ({
+                        rotulo: formatShortDate(p.data),
+                        valor: p.alcance,
+                        frase: `${p.formato} de ${formatShortDate(p.data)}: ${formatCompact(p.alcance)} de alcance · “${p.legenda}”`,
+                      }))}
+                    />
+                  </div>
+                </div>
+              )}
               <ul className="flex flex-col">
                 {lista.map((p) => (
                   <li key={p.id} className="flex items-center gap-4 border-b border-separator py-3 last:border-b-0">

@@ -7,7 +7,8 @@ import { MetricasRedes } from "@/components/perfil/metricas-redes";
 import { ResumoVendas, TabelaVendas } from "@/components/vendas/vendas";
 import { assuntos, respostasExemplo } from "@/lib/perfil-campos";
 import { initials } from "@/lib/format";
-import { briefingsDe, eu, influenciadorPorSlug, influenciadores, vendasDe } from "@/exemplo/dados";
+import { Audiencia } from "@/components/viz/audiencia";
+import { audienciaDeSlug, briefingsDe, eu, influenciadorPorSlug, influenciadores, vendasDe } from "@/exemplo/dados";
 
 export function generateStaticParams() {
   return influenciadores.map((i) => ({ slug: i.slug }));
@@ -44,6 +45,8 @@ export default async function InfluenciadorPage({ params }: { params: Promise<{ 
           </div>
         </div>
       </header>
+
+      <Audiencia dados={audienciaDeSlug(i.slug)} />
 
       <Secao title="Redes sociais">
         <MetricasRedes influenciador={i} />
