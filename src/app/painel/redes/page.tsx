@@ -1,6 +1,6 @@
 import { Page } from "@/components/page";
 import { Secao, Titulo } from "@/components/blocos";
-import { ConectarRedes } from "@/components/perfil/conectar-redes";
+import { ContasPopover } from "@/components/perfil/contas-popover";
 import { MetricasRedes } from "@/components/perfil/metricas-redes";
 import { Audiencia } from "@/components/viz/audiencia";
 import { audienciaDeSlug, eu } from "@/exemplo/dados";
@@ -8,10 +8,12 @@ import { audienciaDeSlug, eu } from "@/exemplo/dados";
 export default function RedesPage() {
   return (
     <Page>
-      <Titulo eyebrow="Redes sociais" title="Suas métricas" subtitle="Conecte o Instagram e o TikTok: os números chegam sozinhos, sem print." />
-      <Secao title="Contas conectadas">
-        <ConectarRedes inicial={eu.redes} />
-      </Secao>
+      <Titulo
+        eyebrow="Redes sociais"
+        title="Suas métricas"
+        subtitle="Os números chegam sozinhos das redes conectadas, sem print."
+        actions={<ContasPopover contas={eu.redes} />}
+      />
       <Secao title="Desempenho" description="Últimas 8 semanas.">
         <MetricasRedes />
       </Secao>

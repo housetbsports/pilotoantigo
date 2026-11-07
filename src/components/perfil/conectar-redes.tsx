@@ -38,7 +38,7 @@ export function ConectarRedes({ inicial = {} }: { inicial?: Contas }) {
               </span>
               <span className="truncate text-footnote text-label-secondary">
                 {on
-                  ? `${eu.arroba} · ${formatCompact(exemplo[rede].seguidores)} seguidores · ${exemplo[rede].engajamento.toLocaleString("pt-BR")}% de engajamento`
+                  ? `${eu.arroba} · ${formatCompact(exemplo[rede].seguidores)} seguidores`
                   : "Conecte para a TB ler seus números sem print"}
               </span>
             </div>
